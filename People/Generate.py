@@ -22,10 +22,10 @@ def generate_relationships_individual(individual, step, population, number):
         if number <= population_size:
             while i < number:
                 index = randint(0, population_size - 1)
-                an_id = population[index]
-
-                if an_id.id not in individual.relationships:
-                    individual.relationships.append(an_id.id)
+                another_individual = population[index]
+                # picks a person object from the group
+                if another_individual.id not in individual.relationships:
+                    individual.relationships.append(another_individual.id)
                     i += 1
         else:
             pass
@@ -53,3 +53,31 @@ def build_relationship_array(population):  # Will be edited to include more adva
         for relationship in person.relationships:
             array += [[person.id, 'placeholder', relationship]]
     return array
+
+def generate_relationships_individual_parallel(group):
+
+
+def generate_relationships_population_parallel(pop, mean_number: int, rang: int, num_groups: int):
+    # cuts population into chunks and generates relationships within each chunk
+    groups = np.array_split(pop, num_groups)
+
+    def generate_relationships_individual_parallel(individual):
+        # This needs to inside in order to use the global variables
+        individual.relationships = []
+        population_size = len(group)
+        i = 0
+        n = randint(mean_number - rang, mean_number + rang)
+        if n <= population_size:
+            while i < n:
+                index = randint(0, population_size - 1)
+                another_individual = group[index]
+                # picks a person object from the group
+                if another_individual.id not in individual.relationships:
+                    individual.relationships.append(another_individual.id)
+                    i += 1
+    for group in groups:
+
+        for guy in group:
+
+            mp.Pool().imap(generate_relationships_individual_parallel, guy)
+        # print(group, "dicks")"""
