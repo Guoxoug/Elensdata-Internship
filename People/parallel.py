@@ -5,10 +5,10 @@ import multiprocessing as mp
 import pandas as pd
 from timeit import default_timer
 from People.person_class import person
+
 """"MULTIPROCESSING CAN ONLY CALL TOP LEVEL FUNCTIONS"""
 if __name__ == "__main__":
     print('tits')
-
 
     """def generate_relationships_population_parallel(pop, mean_number: int, rang: int, num_groups: int):
         # cuts population into chunks and generates relationships within each chunk
@@ -82,20 +82,33 @@ if __name__ == "__main__":
 
     print("time taken: ", default_timer() - start)
     print(Pop[0])"""
-# DOESN@T IMPROVE SPEED CONSIDER USING A NESTED FOR LOOP
+    # DOESN@T IMPROVE SPEED CONSIDER USING A NESTED FOR LOOP
     overall_population_size = 1000000
-    number = 8
-    pool = mp.Pool()
+    number = 1
+    sub_number = mp.cpu_count()
+
     for i in range(number):
         start = default_timer()
-        start_id = int(overall_population_size // number * i + 1)
-        chunk = overall_population_size // number
+        pool = mp.Pool()
+        pop = pd.Series([])
+        def append_pop(sub_pop):
+            global pop
+            pop = pop.append(sub_pop)
+        for j in range(sub_number):
+            start_id = int(
+                overall_population_size // (number * sub_number) * j
+                 + overall_population_size // (number) * i + 1)
+            print(start_id)
+            chunk = overall_population_size // (number * sub_number)
+            sub_pop = Generate.generate_population(chunk, start_id)
+            # rewrite pop with relationships
+            sub_pop = pool.apply_async(Generate.generate_relationships_population, (sub_pop, 3, 2, 10, True,), callback=append_pop)
+            #pop = pop.append(sub_pop)
 
-        Pop = Generate.generate_population(chunk, start_id)
-        # rewrite pop with relationships
-        Pop = pool.apply_async(Generate.generate_relationships_population, (Pop, 3, 2, 10, True,)).get()
 
-        array = Generate.build_relationship_array(Pop)
+        pool.close()
+        pool.join()
+        array = Generate.build_relationship_array(pop)
         if i == 0:
             df = pd.DataFrame(array, columns=['person1_id', 'rel_id', 'person2_id'])
             df.to_csv('less_Relationships.csv', index=False)
@@ -105,5 +118,3 @@ if __name__ == "__main__":
         # print(df)
 
         print("Process: " + str(i) + "\nTime taken: ", default_timer() - start)
-    pool.close()
-    pool.join()
