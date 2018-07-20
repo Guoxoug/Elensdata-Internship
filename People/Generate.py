@@ -35,7 +35,7 @@ def generate_relationships_individual(individual, step, population, number):
     # while count < number:
 
 
-def generate_relationships_population(pop, mean_number: int, rang: int, num_groups: int):
+def generate_relationships_population(pop, mean_number: int, rang: int, num_groups: int, ret=False):
     # cuts population into chunks and generates relationships within each chunk
     groups = np.array_split(pop, num_groups)
 
@@ -45,7 +45,8 @@ def generate_relationships_population(pop, mean_number: int, rang: int, num_grou
             n = randint(mean_number - rang, mean_number + rang)
             generate_relationships_individual(group[j], 1, group, n)
         # print(group, "dicks")
-
+    if ret:
+        return pop
 
 def build_relationship_array(population):  # Will be edited to include more advanced relationships
     array = []
