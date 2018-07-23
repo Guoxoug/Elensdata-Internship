@@ -84,7 +84,7 @@ if __name__ == "__main__":
     print(Pop[0])"""
     # DOESN@T IMPROVE SPEED CONSIDER USING A NESTED FOR LOOP
     overall_population_size = 1000000
-    number = 1
+    number = 3
     sub_number = mp.cpu_count()
 
     for i in range(number):
