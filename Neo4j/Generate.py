@@ -1,7 +1,7 @@
 import numpy as np
 import multiprocessing as mp
 import pandas as pd
-from People import person_class
+from Neo4j import person_class
 from random import randint
 
 

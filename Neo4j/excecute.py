@@ -1,4 +1,4 @@
-from People import Generate
+from Neo4j import Generate
 import pandas as pd
 from timeit import default_timer
 overall_population_size = 10000000
